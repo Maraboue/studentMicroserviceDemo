@@ -53,18 +53,26 @@ public class StudentService {
 
     }
 
-    public String addStudent(Student student){
+    public ResponseEntity<HttpStatus> addStudent(Student student){
 
-        Optional<Student> existingStudent = studentRepository.studentEmailExists(student.getMail());
-        if(existingStudent.isPresent()) {
-            Student s = existingStudent.get();
-            logger.info("Tried to add new student with mail: "+ s.getMail()+" at:" + LocalDate.now() + LocalTime.now());
-            return "Student with "+ s.getMail() + " already exists!";
-        }
-         else
+        try {
+            Optional<Student> existingStudent = studentRepository.studentEmailExists(student.getMail());
+            if (existingStudent.isPresent()) {
+                Student s = existingStudent.get();
+                logger.info("Tried to add existing student with mail: " + s.getMail() + " at:" + LocalDate.now() + LocalTime.now());
+                //return "Student with " + s.getMail() + " already exists!";
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
             studentRepository.save(student);
             logger.info("New student added with mail: "+ student.getMail()+" at:" + LocalDate.now() + LocalTime.now());
-            return "Student with name:" + student.getName() + " and mail: "+student.getMail()+" added!";
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        /* else
+            studentRepository.save(student);
+            logger.info("New student added with mail: "+ student.getMail()+" at:" + LocalDate.now() + LocalTime.now());
+            return "Student with name:" + student.getName() + " and mail: "+student.getMail()+" added!";*/
     }
 
     public Student findStudentById(long id) {
@@ -78,17 +86,22 @@ public class StudentService {
             return null;
     }
 
-    public String addRoleToStudent(long id, String role){
-        Optional<Student> optStudent = studentRepository.findById(id);
-        System.out.println(optStudent.toString());
-        if(optStudent.isPresent()) {
-            Student student = optStudent.get();
-            studentRepository.updateStudentRole(student.getMail(),Roles.valueOf(role));
-            logger.info("Student with mail: "+ student.getMail()+" updated with role: " +role+" at: " + LocalDate.now()+" "+LocalTime.now());
-            return "Student with mail: " + student.getMail() + "Updated with role: "+ role;
+    public ResponseEntity<HttpStatus> addRoleToStudent(long id, String role){
+        try{
+            Optional<Student> optStudent = studentRepository.findById(id);
+                if(optStudent.isPresent()) {
+                    Student student = optStudent.get();
+                    studentRepository.updateStudentRole(student.getMail(), Roles.valueOf(role));
+                    logger.info("Student with mail: " + student.getMail() + " updated with role: " + role + " at: " + LocalDate.now() + " " + LocalTime.now());
+                    //return "Student with mail: " + student.getMail() + "Updated with role: "+ role;
+                    return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+                }
+            logger.info("Student with id: " + id + " could not be found. " + LocalDate.now() + " " + LocalTime.now());
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }catch (Exception e) {
+            logger.info("Exception:"+ HttpStatus.INTERNAL_SERVER_ERROR + "Thrown at: "  + LocalDate.now() + " " + LocalTime.now());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        else
-            return null;
     }
 
     public ResponseEntity<HttpStatus> deleteStudentByMail(String mail) {

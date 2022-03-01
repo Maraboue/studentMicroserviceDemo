@@ -26,7 +26,7 @@ public class StudentController {
     }
 
     @PostMapping("/addStudent")
-    public String addStudent(@RequestBody Student student){
+    public ResponseEntity<HttpStatus> addStudent(@RequestBody Student student){
         return studentService.addStudent(student);
     }
 
@@ -36,7 +36,7 @@ public class StudentController {
     }
 
     @PutMapping("/addRoleToStudent")
-    public String addRoleToStudent(long id, String role) {
+    public ResponseEntity<HttpStatus> addRoleToStudent(long id, String role) {
         return studentService.addRoleToStudent(id,role);
     }
 
@@ -50,7 +50,6 @@ public class StudentController {
 
     @DeleteMapping(value = "/deleteStudent/{mail}")
     public ResponseEntity<HttpStatus> deleteStudent(@PathVariable String mail){
-        System.out.println("in delete student");
             return studentService.deleteStudentByMail(mail);
     }
 
