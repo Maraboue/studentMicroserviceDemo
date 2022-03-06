@@ -15,19 +15,11 @@ steps:
     mavenPomFile: 'pom.xml'
     mavenOptions: '-Xmx3072m'
     javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
+    jdkVersionOption: '1.11'
     jdkArchitectureOption: 'x64'
     publishJUnitResults: false
     testResultsFiles: '**/TEST-*.xml'
     goals: 'package'
-
-- task: CopyFiles@2
-  inputs:
-    contents: '**/*.war'
-    targetFolder: '$(build.artifactStagingDirectory)'
-
+    
 - task: PublishBuildArtifacts@1
-  inputs:
-    artifactName: 'war'
-    pathToPublish: '$(build.artifactStagingDirectory)'
 
