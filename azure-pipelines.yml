@@ -23,4 +23,4 @@ steps:
     
 - task: PublishBuildArtifacts@1
   inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+    pathtoPublish: '$(System.DefaultWorkingDirectory)\InnovationInABox-CI\drop\s\build' 
