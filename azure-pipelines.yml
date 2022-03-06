@@ -22,5 +22,4 @@ steps:
     goals: 'package'
     
 - task: PublishBuildArtifacts@1
-  inputs:
-    pathtoPublish: '$(System.DefaultWorkingDirectory)\InnovationInABox-CI\drop\s\build' 
+
